@@ -1,4 +1,4 @@
-# NHDL
+# nhdl
 nhdl - a command-line doujinshi downloader client built in rust!
 ## goals
 - **fast and asynchronous** doujinshi downloader, supporting various doujinshi sites.

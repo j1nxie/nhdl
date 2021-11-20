@@ -16,7 +16,7 @@ cargo build
 cargo run
 ```
 ## roadmap
-- [*] basic support for single NH links through stdin.
+- [x] basic support for single NH links through stdin.
 - [ ] multithreaded downloading.
 - [ ] a text file / id parser for mass download.
 - [ ] toml-based configuration for:

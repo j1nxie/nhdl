@@ -1,6 +1,6 @@
 use std::error::Error;
 use select::document::Document;
-use select::predicate::{Attr, Name};
+use select::predicate::{Attr, Name, Class};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -30,6 +30,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
     for node in document.find(Attr("name", "twitter:description")) {
         let tags = node.attr("content").unwrap();
         println!("tags: {}", textwrap::fill(tags, 80));
+    }
+
+    // get page count
+    for node in document.find(Attr("id", "tags")) {
+        for a in node.find(Name("a")) {
+            if a.attr("href").unwrap().contains("pages") {
+                let pages = a.first_child().unwrap().text();
+                println!("pages: {}", pages);
+            }
+        }
     }
 
     Ok(())

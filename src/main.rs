@@ -1,7 +1,6 @@
 use std::error::Error;
 use select::document::Document;
-use select::predicate::{Attr, Class, Name, Predicate};
-use scraper::{Html, Selector};
+use select::predicate::{Attr, Name};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

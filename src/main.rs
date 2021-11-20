@@ -1,6 +1,8 @@
 use std::error::Error;
+use std::fs;
+use regex::Regex;
 use select::document::Document;
-use select::predicate::{Attr, Name, Class};
+use select::predicate::{Attr, Name};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -33,14 +35,38 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 
     // get page count
+    let mut pages = String::new();
     for node in document.find(Attr("id", "tags")) {
         for a in node.find(Name("a")) {
             if a.attr("href").unwrap().contains("pages") {
-                let pages = a.first_child().unwrap().text();
+                pages = a.first_child().unwrap().text();
                 println!("pages: {}", pages);
             }
         }
     }
 
+    // parse gallery id
+    let mut gallery_link = String::new();
+    for node in document.find(Name("head")) {
+        for meta in node.find(Attr("property", "og:image")) {
+            gallery_link = meta.attr("content").unwrap().to_string();
+        }
+    }
+    let re = Regex::new(r"[0-9]+").unwrap();
+    let caps = re.captures(&gallery_link).unwrap();
+    let gallery_id = caps.get(0).map_or("", |m| m.as_str());
+    
+    // download
+    let dir = format!("./{}", id);
+    fs::create_dir(dir)
+        .expect("[error] directory already exists");
+    for i in 1..=pages.parse::<u8>().unwrap() {
+        let download_response = reqwest::get(format!("https://i.nhentai.net/galleries/{}/{}.jpg", gallery_id, i)).await
+            .expect("[error] request failed");
+        let file_stream = download_response.bytes().await?;
+        let image = image::load_from_memory(&file_stream)?;
+        image.save(format!("{}/{}.jpg", id, i)).unwrap();
+    }
+    
     Ok(())
 }

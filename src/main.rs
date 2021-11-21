@@ -9,8 +9,25 @@ use select::predicate::{Attr, Name};
 async fn main() -> Result<(), Box<dyn Error>> {
     // get url from user input
     let mut input = String::new();
-    std::io::stdin().read_line(&mut input)
-        .expect("[error] unable to read user input");
+    loop {
+        std::io::stdin().read_line(&mut input)
+            .expect("[error] unable to read user input");
+        let test = &input.trim().parse::<u32>();
+        match test {
+            Ok(ok) => {
+                input = format!("https://nhentai.net/g/{}/", ok);
+                break;
+            },
+            Err(_e) => {
+                let valid = &input.trim().contains("nhentai.net");
+                match valid {
+                    true => break,
+                    false => println!("[error] invalid url or id!")
+                }
+            }
+        }
+        input = String::new(); // resets input
+   }
 
     // get html source from reqwest
     let response = reqwest::get(&input).await?;
@@ -56,7 +73,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let re = Regex::new(r"[0-9]+").unwrap();
     let caps = re.captures(&gallery_link).unwrap();
     let gallery_id = caps.get(0).map_or("", |m| m.as_str());
-    
+
     // download
     let dir = format!("./{}", id);
     if Path::new(&dir).exists() {

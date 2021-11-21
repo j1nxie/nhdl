@@ -83,6 +83,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let download_response = reqwest::get(format!("https://i.nhentai.net/galleries/{}/{}.jpg", gallery_id, i)).await
             .expect("[error] request failed");
         let file_stream = download_response.bytes().await?;
+        println!("[status] downloading page {}/{}", i, pages);
         let image = image::load_from_memory(&file_stream)?;
         image.save(format!("{}/{}.jpg", id, i)).unwrap();
     }

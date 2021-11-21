@@ -76,7 +76,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     // download
     let dir = format!("./{}", id);
-    if Path::new(&dir).exists() {
+    if !Path::new(&dir).exists() {
         fs::create_dir(dir)?;
     }
     for i in 1..=pages.parse::<u8>().unwrap() {

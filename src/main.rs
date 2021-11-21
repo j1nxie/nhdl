@@ -1,4 +1,5 @@
 use std::error::Error;
+use std::path::Path;
 use std::fs;
 use regex::Regex;
 use select::document::Document;
@@ -58,8 +59,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     
     // download
     let dir = format!("./{}", id);
-    fs::create_dir(dir)
-        .expect("[error] directory already exists");
+    if Path::new(&dir).exists() {
+        fs::create_dir(dir)?;
+    }
     for i in 1..=pages.parse::<u8>().unwrap() {
         let download_response = reqwest::get(format!("https://i.nhentai.net/galleries/{}/{}.jpg", gallery_id, i)).await
             .expect("[error] request failed");
@@ -67,6 +69,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let image = image::load_from_memory(&file_stream)?;
         image.save(format!("{}/{}.jpg", id, i)).unwrap();
     }
-    
+
     Ok(())
 }

@@ -19,7 +19,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 break;
             },
             Err(_e) => {
-                let valid = &input.trim().contains("nhentai.net");
+                let valid = &input.trim().contains("https://nhentai.net/g/");
                 match valid {
                     true => break,
                     false => println!("[error] invalid url or id!")

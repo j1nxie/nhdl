@@ -41,8 +41,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let test = node.find(Name("h2")).next();
         match test {
             Some(ok) => {
-                let japanese = ok.text();
-                println!("japanese title: {}", japanese);
+                let original = ok.text();
+                println!("original title: {}", original);
             },
             None => break
         }

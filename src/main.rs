@@ -35,15 +35,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let document = Document::from(body.as_str());
 
     // get titles
-    let romaji = document.find(Name("h1")).next().unwrap().text();
-    let japanese = document.find(Name("h2")).next().unwrap().text();
+    for node in document.find(Attr("id", "info")) {
+        let romaji = node.find(Name("h1")).next().unwrap().text();
+        println!("romaji title: {}", romaji);
+        let test = node.find(Name("h2")).next();
+        match test {
+            Some(ok) => {
+                let japanese = ok.text();
+                println!("japanese title: {}", japanese);
+            },
+            None => break
+        }
+    }
 
     // get id
     let id = document.find(Name("h3")).next().unwrap().text();
 
     // print status
-    println!("romaji title: {}", romaji);
-    println!("japanese title: {}", japanese);
     println!("id: {}", id);
 
     // get tags

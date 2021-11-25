@@ -8,16 +8,20 @@ nhdl - a command-line doujinshi downloader client built in rust!
 - give access to paywalled content.
 - support for every doujinshi site in existence.
 ## build
-only building from source is available for now.
 ```
 git clone https://github.com/j1nxie/nhdl.git
 cd nhdl
 cargo build
 cargo run
 ```
+## releases
+releases are available in the [releases](https://github.com/j1nxie/nhdl/releases) tab and sidebar!
+## usage
+run `nhdl` and input either a NH link or a valid url. after hitting enter, you should see the title, id and tags of given doujinshi if given id was valid.
+download will immediately start, saved at `<nhdl directory>/<id>`.
 ## roadmap
 - [x] basic support for single NH links through stdin.
-- [ ] multithreaded downloading.
+- [x] multithreaded downloading.
 - [ ] a text file / id parser for mass download.
 - [ ] toml-based configuration for:
     - [ ] download path

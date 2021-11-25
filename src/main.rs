@@ -18,8 +18,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 break;
             },
             Err(_) => {
-                let valid = &input.trim().contains("https://nhentai.net/g/");
-                match valid {
+                match &input.trim().contains("https://nhentai.net/g/") {
                     true => break,
                     false => println!("[error] invalid url or id!")
                 }
@@ -37,8 +36,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     for node in document.find(Attr("id", "info")) {
         let romaji = node.find(Name("h1")).next().unwrap().text();
         println!("romaji title: {}", romaji);
-        let test = node.find(Name("h2")).next();
-        match test {
+        match node.find(Name("h2")).next() {
             Some(ok) => {
                 let original = ok.text();
                 println!("original title: {}", original);

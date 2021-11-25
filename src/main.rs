@@ -12,13 +12,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
     loop {
         std::io::stdin().read_line(&mut input)
             .expect("[error] unable to read user input");
-        let test = &input.trim().parse::<u32>();
-        match test {
-            Ok(ok) => {
-                input = format!("https://nhentai.net/g/{}/", ok);
+        match &input.trim().parse::<u32>() {
+            Ok(id) => {
+                input = format!("https://nhentai.net/g/{}/", id);
                 break;
             },
-            Err(_e) => {
+            Err(_) => {
                 let valid = &input.trim().contains("https://nhentai.net/g/");
                 match valid {
                     true => break,

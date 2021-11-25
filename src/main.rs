@@ -4,6 +4,8 @@ use std::fs;
 use regex::Regex;
 use select::document::Document;
 use select::predicate::{Attr, Name};
+use futures::future::join_all;
+use tokio::task::JoinHandle;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -75,23 +77,46 @@ async fn main() -> Result<(), Box<dyn Error>> {
             gallery_link = meta.attr("content").unwrap().to_string();
         }
     }
-    let re = Regex::new(r"[0-9]+").unwrap();
-    let caps = re.captures(&gallery_link).unwrap();
-    let gallery_id = caps.get(0).map_or("", |m| m.as_str());
+    let id_re = Regex::new(r"[0-9]+").unwrap();
+    let id_caps = id_re.captures(&gallery_link).unwrap();
+    let gallery_id = id_caps.get(0).map_or("", |m| m.as_str());
 
     // download
     let dir = format!("./{}", id);
     if !Path::new(&dir).exists() {
         fs::create_dir(dir)?;
     }
+    // initialize download links vector
+    let mut paths = vec![];
     for i in 1..=pages.parse::<u8>().unwrap() {
-        let download_response = reqwest::get(format!("https://i.nhentai.net/galleries/{}/{}.jpg", gallery_id, i)).await
-            .expect("[error] request failed");
-        let file_stream = download_response.bytes().await?;
-        println!("[status] downloading page {}/{}", i, pages);
-        let image = image::load_from_memory(&file_stream)?;
-        image.save(format!("{}/{}.jpg", id, i)).unwrap();
+        paths.push(format!("https://i.nhentai.net/galleries/{}/{}.jpg", gallery_id, i));
     }
+    // downloader
+    let mut tasks: Vec<JoinHandle<Result<(), ()>>> = vec![];
+    for path in paths {
+        let path = path.clone();
+        let id = id.clone();
+
+        tasks.push(tokio::spawn(async move {
+            match reqwest::get(&path).await {
+                Ok(resp) => match resp.bytes().await {
+                        Ok(stream) => match image::load_from_memory(&stream) {
+                            Ok(img) => {
+                                let page_re = Regex::new(r"(\w+\.)+\w+$").unwrap();
+                                let page_caps = page_re.captures(&path).unwrap();
+                                let file_name = page_caps.get(0).map_or("", |m| m.as_str());
+                                img.save(format!("{}/{}", id, file_name)).unwrap();
+                            },
+                            Err(e) => println!("[error] cannot write file: {:?}", e)
+                        },             
+                        Err(e) => println!("[error] cannot get file stream: {:?}", e)
+                },
+                Err(e) => println!("[error] failed to download file: {:?}", e)
+            }
+            Ok(())
+        }));
+    }
+    join_all(tasks).await;
 
     Ok(())
 }

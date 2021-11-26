@@ -33,7 +33,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
    }
 
     // get html source from reqwest
-    let response = reqwest::get(&input).await?;
+    let client = Client::builder().build()?;
+    let response = client.get(&input).send().await?;
     let body = response.text().await?;
     let document = Document::from(body.as_str());
 
@@ -95,7 +96,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
         paths.push(format!("https://i.nhentai.net/galleries/{}/{}.jpg", gallery_id, i));
     }
     // downloader
-    let client = Client::builder().build()?;
     let sem = Arc::new(Semaphore::new(10));
     let mut tasks: Vec<JoinHandle<Result<(), ()>>> = vec![];
     for path in paths {

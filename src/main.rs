@@ -54,7 +54,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // get id
     let id = document.find(Name("h3")).next().unwrap().text();
 
-    // print status
+    // print id 
     println!("id: {}", id);
 
     // get tags

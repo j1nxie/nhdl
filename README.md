@@ -11,8 +11,7 @@ nhdl - a command-line doujinshi downloader client built in rust!
 ```
 git clone https://github.com/j1nxie/nhdl.git
 cd nhdl
-cargo build
-cargo run
+cargo build --release
 ```
 ## releases
 releases are available in the [releases](https://github.com/j1nxie/nhdl/releases) tab and sidebar!

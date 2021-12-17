@@ -1,0 +1,10 @@
+name: nhdl
+version: "0.1.2"
+author: j1nxie (rylieeeeexd@gmail.com)
+args:
+  - INPUT:
+      short: i
+      help: sets the input link / file
+      required: true
+      index: 1
+

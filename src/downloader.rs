@@ -2,12 +2,16 @@
  * downloader function for nhdl
  * take a Vec<String> of urls, a String id as folder name and a reqwest Client
  * output downloaded files from given urls asynchronously
-*/
+ */
 use std::sync::Arc;
+
 use regex::Regex;
+
 use futures::future::join_all;
+
 use tokio::sync::Semaphore;
 use tokio::task::JoinHandle;
+
 use reqwest::Client;
 
 pub async fn downloader(paths: Vec<String>, id: String, client: Client) {

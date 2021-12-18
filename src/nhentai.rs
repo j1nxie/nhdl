@@ -29,6 +29,12 @@ impl NH {
     pub fn get_id(&mut self, document: Document) {
         self.id = document.find(Name("h3")).next().unwrap().text();
     }
+    
+    pub fn get_tags(&mut self, document: Document) {
+        for node in document.find(Attr("name", "twitter:description")) {
+            self.tags = node.attr("content").unwrap().to_string();
+        }
+    }
 
     pub fn get_page(&mut self, document: Document) {
         for node in document.find(Attr("id", "tags")) {

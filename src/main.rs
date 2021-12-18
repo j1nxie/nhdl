@@ -41,8 +41,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let document = Document::from(body.as_str());
 
     // get metadata 
-    let title = nhentai::metadata(document);
-    nhentai::print_status(title.clone());
+    let mut title: nhentai::NH = Default::default();
+    title.get_title(document.clone());
+    title.get_id(document.clone());
+    title.get_page(document.clone());
+    title.get_gallery(document.clone());
+    title.print_status();
 
     // initialize download directory
     let dir = format!("./{}", title.id);

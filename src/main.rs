@@ -12,6 +12,7 @@ use clap::App;
 
 mod downloader;
 mod nhentai;
+mod html;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -44,6 +45,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let mut title: nhentai::NH = Default::default();
     title.get_title(document.clone());
     title.get_id(document.clone());
+    title.get_tags(document.clone());
     title.get_page(document.clone());
     title.get_gallery(document.clone());
     title.print_status();

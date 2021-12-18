@@ -5,7 +5,7 @@ use select::predicate::{Attr, Name};
 use select::document::Document;
 use regex::Regex;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct NH {
     pub romaji: String,
     pub original: String,
@@ -15,67 +15,50 @@ pub struct NH {
     pub gallery_id: String,
 }
 
-impl Default for NH {
-    fn default() -> NH {
-        NH {
-            romaji: String::new(),
-            original: String::new(),
-            id: String::new(),
-            tags: String::new(),
-            pages: String::new(),
-            gallery_id: String::new(),
-        }
-    }
-}
-
-pub fn metadata(document: Document) -> NH {
-    let mut title = NH::default();
-    // get titles
-    for node in document.find(Attr("id", "info")) {
-        title.romaji = node.find(Name("h1")).next().unwrap().text();
-        match node.find(Name("h2")).next() {
-            Some(ok) => title.original = ok.text(),
-            None => break
-        }
-    }
-
-    // get id
-    title.id = document.find(Name("h3")).next().unwrap().text();
-
-    // get tags
-    for node in document.find(Attr("name", "twitter:description")) {
-        title.tags = node.attr("content").unwrap().to_string();
-    }
-
-    // get page count
-    for node in document.find(Attr("id", "tags")) {
-        for a in node.find(Name("a")) {
-            if a.attr("href").unwrap().contains("pages") {
-                title.pages = a.first_child().unwrap().text();
+impl NH {
+    pub fn get_title(&mut self, document: Document) {
+        for node in document.find(Attr("id", "info")) {
+            self.romaji = node.find(Name("h1")).next().unwrap().text();
+            match node.find(Name("h2")).next() {
+                Some(ok) => self.original = ok.text(),
+                None => break
             }
         }
     }
 
-    // parse gallery id
-    let mut gallery_link = String::new();
-    for node in document.find(Name("head")) {
-        for meta in node.find(Attr("property", "og:image")) {
-            gallery_link = meta.attr("content").unwrap().to_string();
+    pub fn get_id(&mut self, document: Document) {
+        self.id = document.find(Name("h3")).next().unwrap().text();
+    }
+
+    pub fn get_page(&mut self, document: Document) {
+        for node in document.find(Attr("id", "tags")) {
+            for a in node.find(Name("a")) {
+                if a.attr("href").unwrap().contains("pages") {
+                    self.pages = a.first_child().unwrap().text();
+                }
+            }
         }
     }
-    let id_re = Regex::new(r"[0-9]+").unwrap();
-    let id_caps = id_re.captures(&gallery_link).unwrap();
-    title.gallery_id = id_caps.get(0).map_or("", |m| m.as_str()).to_string();
 
-    return title;
-}
-
-pub fn print_status(title: NH) {
-    println!("romaji title: {}", title.romaji);
-    if !title.original.is_empty() {
-        println!("original title: {}", title.original);
+    pub fn get_gallery(&mut self, document: Document) {
+        let mut gallery_link = String::new();
+        for node in document.find(Name("head")) {
+            for meta in node.find(Attr("property", "og:image")) {
+                gallery_link = meta.attr("content").unwrap().to_string();
+            }
+        }
+        let id_re = Regex::new(r"[0-9]+").unwrap();
+        let id_caps = id_re.captures(&gallery_link).unwrap();
+        self.gallery_id = id_caps.get(0).map_or("", |m| m.as_str()).to_string();
     }
-    println!("id: {}", title.id);
-    println!("tags: {}", textwrap::fill(&title.tags, 80));
-    println!("pages: {}", title.pages);
+
+    pub fn print_status(&self) {
+        println!("romaji title: {}", self.romaji);
+        if !self.original.is_empty() {
+            println!("original title: {}", self.original);
+        }
+        println!("id: {}", self.id);
+        println!("tags: {}", textwrap::fill(&self.tags, 80));
+        println!("pages: {}", self.pages);
+    }
 }

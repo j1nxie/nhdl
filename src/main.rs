@@ -1,44 +1,18 @@
 use std::error::Error;
 use std::path::Path;
-use std::fs::{self, File};
-use std::io::BufReader;
-use std::io::prelude::*;
+
+use std::fs;
 
 use reqwest::Client;
-
-#[macro_use]
-extern crate clap;
-use clap::App;
 
 mod downloader;
 mod nhentai;
 mod html;
+mod init;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let yaml = load_yaml!("cli.yml");
-    let matches = App::from_yaml(yaml).get_matches();
-    // get url from user input
-    let input = matches.value_of("INPUT").unwrap().to_string();
-    let mut list = vec![];
-    loop {
-        match &input.trim().parse::<u32>() {
-            Ok(id) => {
-                list.push(format!("https://nhentai.net/g/{}/", id));
-                break;
-            },
-            Err(_) => {
-                match &input.trim().contains("https://nhentai.net/g/") {
-                    true => {
-                        list.push(input);
-                        break;
-                    },
-                    false => println!("[error] invalid url or id!")
-                }
-            }
-        }
-    }
-
+    let list = init::get_input();
     // get html source from reqwest
     let client = Client::builder().build()?;
     for doujin in list {

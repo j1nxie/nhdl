@@ -25,6 +25,7 @@ run `nhdl` in a command-line interface for help on usage.
     - [ ] download path
     - [ ] thread count
     - [ ] proxy support
+- [ ] pretty-printing of download progress.
 ## license
 this project is licensed under the [gnu gpl3](https://gnu.org/licenses/gpl-3.0.en.html).
 ## credits / dependencies

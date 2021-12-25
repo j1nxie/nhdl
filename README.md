@@ -16,12 +16,11 @@ cargo build --release
 ## releases
 releases are available in the [releases](https://github.com/j1nxie/nhdl/releases) tab and sidebar!
 ## usage
-run `nhdl` and input either a NH link or a valid url. after hitting enter, you should see the title, id and tags of given doujinshi if given id was valid.
-download will immediately start, saved at `<nhdl directory>/<id>`.
+run `nhdl` in a command-line interface for help on usage.
 ## roadmap
 - [x] basic support for single NH links through stdin.
 - [x] multithreaded downloading.
-- [ ] a text file / id parser for mass download.
+- [x] a text file / id parser for mass download.
 - [ ] toml-based configuration for:
     - [ ] download path
     - [ ] thread count

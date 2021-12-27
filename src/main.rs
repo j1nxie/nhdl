@@ -12,11 +12,18 @@ mod init;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // initialize logger
     tracing_subscriber::fmt::init();
+
+    // get user input - either an id, url or file
     let list = init::get_input();
+
     // get html source from reqwest
     let client = Client::builder().build()?;
+
+    // cycles through each doujin and download them
     for doujin in list {
+        // get html document for parsing
         let document = html::get_document(doujin, client.clone()).await;
 
         // get metadata 

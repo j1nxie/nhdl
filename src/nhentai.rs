@@ -15,6 +15,8 @@ pub struct NH {
     pub gallery_id: String,
 }
 
+// functions for NH to get metadata from the html document. rather self-explanatory,
+// will be easier to understand when you look at a nhentai html page.
 impl NH {
     pub fn get_title(&mut self, document: Document) {
         for node in document.find(Attr("id", "info")) {

@@ -12,6 +12,7 @@ mod init;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    tracing_subscriber::fmt::init();
     let list = init::get_input();
     // get html source from reqwest
     let client = Client::builder().build()?;

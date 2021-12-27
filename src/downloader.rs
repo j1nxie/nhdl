@@ -14,6 +14,8 @@ use tokio::task::JoinHandle;
 
 use reqwest::Client;
 
+use tracing::error;
+
 pub async fn downloader(paths: Vec<String>, id: String, client: Client) {
     let sem = Arc::new(Semaphore::new(10)); // limit max amount of threads so downloads don't break
     let mut tasks: Vec<JoinHandle<Result<(), ()>>> = vec![]; // initialize empty vector for list of tasks
@@ -35,11 +37,11 @@ pub async fn downloader(paths: Vec<String>, id: String, client: Client) {
                             let file_name = page_caps.get(0).map_or("", |m| m.as_str());
                             img.save(format!("{}/{}", id, file_name)).unwrap();
                         },
-                        Err(e) => println!("[error] cannot write file: {:?}", e)
+                        Err(e) => error!("cannot write file: {:?}", e)
                     },             
-                    Err(e) => println!("[error] cannot get file stream: {:?}", e)
+                    Err(e) => error!("cannot get file stream: {:?}", e)
                 },
-                Err(e) => println!("[error] failed to download file: {:?}", e)
+                Err(e) => error!("failed to download file: {:?}", e)
             }
             Ok(())
         }));

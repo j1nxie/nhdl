@@ -5,6 +5,8 @@ use std::error::Error;
 
 use clap::{App, Arg, ArgMatches};
 
+use tracing::error;
+
 fn init_cli() -> clap::Result<ArgMatches<'static>> { 
     return App::new("nhdl")
         .version("0.1.3")
@@ -34,13 +36,13 @@ fn batch(batch_file: String) -> Result<Vec<String>, Box<dyn Error>> {
                         Ok(id) => urls.push(format!("https://nhentai.net/g/{}/", id)),
                         Err(_) => match line.as_ref().unwrap().trim().contains("https://nhentai.net/g/") {
                             true => urls.push(line.unwrap()),
-                            false => println!("[error] invalid url or id!")
+                            false => error!("error while parsing id: {}", line.as_ref().unwrap().trim())
                         }
                     }
                 }
                 Ok(urls)
             },
-            Err(_) => panic!("[error] unable to read file!")
+            Err(_) => panic!("unable to read file!")
         }
     } else {
         Ok(vec![])
@@ -58,24 +60,16 @@ pub fn get_input() -> Vec<String> {
     }
     if let Some(text) = args.value_of("INPUT") {
         input = text; 
-        loop {
             match &input.trim().parse::<u32>() {
-                Ok(id) => {
-                    urls.push(format!("https://nhentai.net/g/{}/", id));
-                    break;
-                },
+                Ok(id) => urls.push(format!("https://nhentai.net/g/{}/", id)),
                 Err(_) => {
                     match &input.trim().contains("https://nhentai.net/g/") {
-                        true => {
-                            urls.push(input.to_string());
-                            break;
-                        },
-                        false => println!("[error] invalid url or id!")
+                        true => urls.push(input.to_string()),
+                        false => error!("error while parsing id: {}", input)
                     }
                 }
             }
         }
-    }
 
     return urls;
 }

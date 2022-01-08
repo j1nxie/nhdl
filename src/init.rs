@@ -1,9 +1,17 @@
-use std::fs::File;
-use std::io::BufReader;
-use std::io::prelude::*;
-use std::error::Error;
+use std::{
+    fs::File,
+    io::{
+        BufReader,
+        prelude::*,
+    },
+    error::Error,
+};
 
-use clap::{App, Arg, ArgMatches};
+use clap::{
+    App,
+    Arg,
+    ArgMatches,
+};
 
 use tracing::error;
 

@@ -9,8 +9,10 @@ use regex::Regex;
 
 use futures::future::join_all;
 
-use tokio::sync::Semaphore;
-use tokio::task::JoinHandle;
+use tokio::{
+    sync::Semaphore,
+    task::JoinHandle,
+};
 
 use reqwest::Client;
 

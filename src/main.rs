@@ -1,7 +1,8 @@
-use std::error::Error;
-use std::path::Path;
-
-use std::fs;
+use std::{
+    error::Error,
+    path::Path,
+    fs,
+};
 
 use reqwest::Client;
 

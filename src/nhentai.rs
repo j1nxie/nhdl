@@ -1,8 +1,13 @@
 /*
  * nhentai library for nhdl
  */
-use select::predicate::{Attr, Name};
-use select::document::Document;
+use select::{
+    predicate::{
+        Attr,
+        Name,
+    },
+    document::Document,
+};
 use regex::Regex;
 
 #[derive(Clone, Default)]

@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate tracing;
+
 use std::{
     error::Error,
     path::Path,
@@ -15,6 +18,7 @@ mod init;
 async fn main() -> Result<(), Box<dyn Error>> {
     // initialize logger
     tracing_subscriber::fmt::init();
+    info!("tracing initialized.");
 
     // get user input - either an id, url or file
     let list = init::get_input();

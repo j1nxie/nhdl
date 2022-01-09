@@ -45,7 +45,7 @@ fn batch(batch_file: String) -> Result<Vec<String>, Box<dyn Error>> {
                         Err(_) => match line.as_ref().unwrap().trim().contains("https://nhentai.net/g/") {
                             true => urls.push(line.unwrap()),
                             false => error!("error while parsing id: {}", line.as_ref().unwrap().trim())
-                        }
+                        },
                     }
                 }
                 Ok(urls)
@@ -62,22 +62,24 @@ pub fn get_input() -> Vec<String> {
     let input;
     let batch_file;
     let mut urls = vec![];
+
     if let Some(text) = args.value_of("batch-file") {
         batch_file = text;
         urls = batch(batch_file.to_string()).unwrap();
     }
+
     if let Some(text) = args.value_of("INPUT") {
         input = text; 
-            match &input.trim().parse::<u32>() {
-                Ok(id) => urls.push(format!("https://nhentai.net/g/{}/", id)),
-                Err(_) => {
-                    match &input.trim().contains("https://nhentai.net/g/") {
-                        true => urls.push(input.to_string()),
-                        false => error!("error while parsing id: {}", input)
-                    }
+        match &input.trim().parse::<u32>() {
+            Ok(id) => urls.push(format!("https://nhentai.net/g/{}/", id)),
+            Err(_) => {
+                match &input.trim().contains("https://nhentai.net/g/") {
+                    true => urls.push(input.to_string()),
+                    false => error!("error while parsing id: {}", input)
                 }
             }
         }
+    }
 
     return urls;
 }

@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate tracing;
 
+#[macro_use]
+extern crate lazy_static;
+
 use std::{
     error::Error,
     path::Path,
@@ -9,10 +12,17 @@ use std::{
 
 use reqwest::Client;
 
+mod settings;
+mod init;
 mod downloader;
 mod nhentai;
 mod html;
-mod init;
+
+lazy_static! {
+    static ref CONFIG: settings::Settings =
+        settings::Settings::new()
+        .expect("config file not found");
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -24,7 +34,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let list = init::get_input();
 
     // get html source from reqwest
-    let client = Client::builder().build()?;
+    let client: Client;
+    if CONFIG.proxy.is_empty() {
+        client = Client::builder().build()?;
+    } else {
+        let proxy = reqwest::Proxy::all(&CONFIG.proxy)?
+            .basic_auth(&CONFIG.proxy_username, &CONFIG.proxy_password);
+        client = Client::builder()
+            .proxy(proxy)
+            .build()?;
+    }
 
     // cycles through each doujin and download them
     for doujin in list {
@@ -41,7 +60,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         title.print_status();
 
         // initialize download directory
-        let dir = format!("./{}", title.id);
+        let dir = format!("{}{}", CONFIG.path, title.id);
         if !Path::new(&dir).exists() {
             fs::create_dir(dir)?;
         }

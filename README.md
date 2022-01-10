@@ -21,16 +21,9 @@ run `nhdl` in a command-line interface for help on usage.
 - [x] basic support for single NH links through stdin.
 - [x] multithreaded downloading.
 - [x] a text file / id parser for mass download.
-- [ ] toml-based configuration for:
-    - [ ] download path
-    - [ ] thread count
-    - [ ] proxy support
+- [x] toml-based configuration for:
+    - [x] download path
+    - [x] proxy support
 - [ ] pretty-printing of download progress.
 ## license
 this project is licensed under the [gnu gpl3](https://gnu.org/licenses/gpl-3.0.en.html).
-## credits / dependencies
-- [tokio](https://github.com/tokio-rs/tokio)
-- [reqwest](https://github.com/seanmonstar/reqwest)
-- [scraper](https://github.com/causal-agent/scraper)
-- [textwrap](https://github.com/mgeisler/textwrap)
-- [toml-rs](https://github.com/alexcrichton/toml-rs)

@@ -17,7 +17,7 @@ use tracing::error;
 
 fn init_cli() -> clap::Result<ArgMatches<'static>> { 
     return App::new("nhdl")
-        .version("0.1.3")
+        .version("0.1.4")
         .author("j1nxie (rylieeeeexd@gmail.com)")
         .arg(Arg::with_name("INPUT")
             .help("nhentai id / url")

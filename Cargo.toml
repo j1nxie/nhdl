@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 futures = "0.3.19"
 image = "0.23.14"
+lazy_static = "1.4"
 regex = "1.5.4"
 select = "0.5.0"
 textwrap = "0.14.2"
@@ -32,4 +33,10 @@ features = [
 version = "1.15.0"
 features = [
     "full"
+]
+
+[dependencies.serde]
+version = "1.0.133"
+features = [
+    "derive"
 ]

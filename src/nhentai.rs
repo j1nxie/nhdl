@@ -1,14 +1,8 @@
-/*
- * nhentai library for nhdl
- */
-use select::{
-    predicate::{
-        Attr,
-        Name,
-    },
-    document::Document,
-};
 use regex::Regex;
+use select::{
+    document::Document,
+    predicate::{Attr, Name},
+};
 
 #[derive(Clone, Default)]
 pub struct NH {
@@ -28,7 +22,7 @@ impl NH {
             self.romaji = node.find(Name("h1")).next().unwrap().text();
             match node.find(Name("h2")).next() {
                 Some(ok) => self.original = ok.text(),
-                None => break
+                None => break,
             }
         }
     }
@@ -36,7 +30,7 @@ impl NH {
     pub fn get_id(&mut self, document: Document) {
         self.id = document.find(Name("h3")).next().unwrap().text();
     }
-    
+
     pub fn get_tags(&mut self, document: Document) {
         for node in document.find(Attr("name", "twitter:description")) {
             self.tags = node.attr("content").unwrap().to_string();

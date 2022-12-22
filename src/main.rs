@@ -34,16 +34,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let list = init::get_input();
 
     // get html source from reqwest
-    let client: Client;
+    let client: Client =
     if CONFIG.proxy.is_empty() {
-        client = Client::builder().build()?;
+        Client::builder().build()?
     } else {
         let proxy = reqwest::Proxy::all(&CONFIG.proxy)?
             .basic_auth(&CONFIG.proxy_username, &CONFIG.proxy_password);
-        client = Client::builder()
+        Client::builder()
             .proxy(proxy)
-            .build()?;
-    }
+            .build()?
+    };
 
     // cycles through each doujin and download them
     for doujin in list {
